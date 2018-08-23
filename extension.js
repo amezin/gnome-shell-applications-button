@@ -29,29 +29,37 @@ var ApplicationsButton = new Lang.Class({
         this.actor.connect_after('key-release-event', this._onKeyRelease.bind(this));
 
         this._stageKeyPressId = null;
-
-        this.overviewConnections = [
-            Main.overview.connect('showing', () => {
-                this.actor.add_style_pseudo_class('overview');
-                this.actor.add_accessible_state (Atk.StateType.CHECKED);
-            }),
-            Main.overview.connect('hiding', () => {
-                this.actor.remove_style_pseudo_class('overview');
-                this.actor.remove_accessible_state (Atk.StateType.CHECKED);
-
-                if (this._stageKeyPressId) {
-                    global.stage.disconnect(this._stageKeyPressId);
-                    this._stageKeyPressId = null;
-                }
-            })
-        ];
+        this._overviewShowingId = Main.overview.connect('showing', this._onOverviewShowing.bind(this));
+        this._overviewHidingId = Main.overview.connect('hiding', this._onOverviewHiding.bind(this));
 
         this._xdndTimeOut = 0;
     },
 
+    _onOverviewShowing() {
+        this.actor.add_style_pseudo_class('overview');
+        this.actor.add_accessible_state(Atk.StateType.CHECKED);
+    },
+
+    _onOverviewHiding() {
+        this.actor.remove_style_pseudo_class('overview');
+        this.actor.remove_accessible_state(Atk.StateType.CHECKED);
+
+        if (this._stageKeyPressId) {
+            global.stage.disconnect(this._stageKeyPressId);
+            this._stageKeyPressId = null;
+        }
+    },
+
     destroy() {
-        this.overviewConnections.forEach((id) => { Main.overview.disconnect(id); });
-        parent();
+        if (this._overviewShowingId > 0) {
+            Main.overview.disconnect(this._overviewShowingId);
+            this._overviewShowingId = 0;
+        }
+        if (this._overviewHidingId > 0) {
+            Main.overview.disconnect(this._overviewHidingId);
+            this._overviewHidingId = 0;
+        }
+        this.parent();
     },
 
     toggleOverview() {
