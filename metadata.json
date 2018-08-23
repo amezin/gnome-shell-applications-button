@@ -1,0 +1,6 @@
+{
+    "name": "Applications Button",
+    "description": "\"Applications\" button on the panel",
+    "uuid": "applications-button@amezin.github.com",
+    "shell-version": ["3.28"]
+}
