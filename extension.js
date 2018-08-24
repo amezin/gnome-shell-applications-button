@@ -70,7 +70,7 @@ var ApplicationsButton = new Lang.Class({
         if (Main.overview.visible)
             Main.overview.hide();
         else {
-            this._stageKeyPressId = global.stage.connect('key-press-event', this._onStageKeyPress.bind(this));
+            this._stageKeyPressId = global.stage.connect('key-press-event', this._onStageKeyPress);
             Main.overview.viewSelector.showApps();
         }
     },
