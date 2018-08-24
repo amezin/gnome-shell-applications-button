@@ -81,9 +81,9 @@ var ApplicationsButton = new Lang.Class({
 
         if (event.get_key_symbol() == Clutter.Escape) {
             if (this._searchActive)
-                this.reset();
-            else
-                Main.overview.hide();
+                return Clutter.EVENT_PROPAGATE;
+
+            Main.overview.hide();
             return Clutter.EVENT_STOP;
         }
     },
